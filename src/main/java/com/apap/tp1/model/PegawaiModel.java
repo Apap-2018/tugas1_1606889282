@@ -15,7 +15,6 @@ import java.util.List;
 @Table(name = "pegawai")
 public class PegawaiModel implements Serializable {
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

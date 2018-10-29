@@ -20,5 +20,6 @@ public interface PegawaiService {
 	PegawaiModel getPegawaiTermuda(InstansiModel instansi);
 	List<PegawaiModel> getPegawaiByInstansiAndTanggalLahirAndTahunMasuk(InstansiModel instansi, Date tanggalLahir, String tahunMasuk);
 	List<PegawaiModel> getAllPegawai();
-	List<PegawaiModel> filterPegawai(@Nullable ProvinsiModel provinsi, @Nullable InstansiModel instansi, List<PegawaiModel> listFilter);
+	void update(PegawaiModel pegawai);
+	PegawaiModel findFirstByNipStartingWithOrderByNipDesc(String nipPegawaiWithoutSequence);
 }

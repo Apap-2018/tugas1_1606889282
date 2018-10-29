@@ -118,40 +118,50 @@ public class PegawaiServiceImpl implements PegawaiService {
 	}
 	
 	@Override
-	public List<PegawaiModel> filterPegawai(ProvinsiModel provinsi, InstansiModel instansi, List<PegawaiModel> listFilter) {
-		List<PegawaiModel> res = new ArrayList<PegawaiModel>();
-		if (provinsi != null) {
-			if (instansi != null) {
-				res = filterByInstansi(instansi, listFilter);
-			}
-			else {
-				List<InstansiModel> listInstansi = instansiService.getInstansiByProvinsi(provinsi);
-				for (InstansiModel instansiProv : listInstansi) {
-					res.addAll(filterByInstansi(instansiProv, listFilter));	
-				}
-			}
-		}
-		
-		else {
-			if (instansi != null) {
-				res = filterByInstansi(instansi, listFilter);
-				
-			}
-			else {
-				res = listFilter;
-			}
-		}
-		return res;
-	}
+    public void update(PegawaiModel pegawai) {
+        InstansiModel instansi = pegawai.getInstansi();
+        Date tanggalLahir = pegawai.getTanggalLahir();
+        String tahunMasuk = pegawai.getTahunMasuk();
+
+        pegawai.setNip(this.nipMaker(instansi, tanggalLahir, tahunMasuk));
+
+        pegawaiDb.save(pegawai);
+    }
 	
-	private List<PegawaiModel> filterByInstansi (InstansiModel instansi, List<PegawaiModel> listPegawai){
-		List<PegawaiModel> res = new ArrayList<PegawaiModel>();
-		for (PegawaiModel pegawai : listPegawai) {
-			if (pegawai.getInstansi().getId() == instansi.getId())
-				res.add(pegawai);
-		}
-		return res;
-	}
+	 private String nipMaker(InstansiModel instansi, Date tanggalLahir, String tahunMasuk) {
+	        String nip = "";
+
+	        String kodeInstansi = Long.toString(instansi.getId());
+	        nip += kodeInstansi;
+
+	        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yy");
+	        String tanggalLahirString = simpleDateFormat.format(tanggalLahir).replace("-", "");
+	        nip += tanggalLahirString;
+
+	        nip += tahunMasuk;
+
+	        int nomorPegawai = 1;
+
+	        String nipPegawaiWithoutSeq = kodeInstansi + tanggalLahirString + tahunMasuk;
+	        PegawaiModel lastPegawaiNipMirip = this.findFirstByNipStartingWithOrderByNipDesc(nipPegawaiWithoutSeq);
+	        if (lastPegawaiNipMirip != null){
+	            nomorPegawai += Integer.parseInt(lastPegawaiNipMirip.getNip().substring(14));
+	        }
+	        String stringNomorPegawai = "";
+	        if (nomorPegawai / 10 == 0){
+	            stringNomorPegawai += "0" + nomorPegawai;
+	        } else {
+	            stringNomorPegawai += Integer.toString(nomorPegawai);
+	        }
+	        nip += stringNomorPegawai;
+
+	        return nip;
+	    }
+	 
+	 @Override
+	    public PegawaiModel findFirstByNipStartingWithOrderByNipDesc(String nipPegawaiWithoutSequence) {
+	        return pegawaiDb.findFirstByNipStartingWithOrderByNipDesc(nipPegawaiWithoutSequence);
+	    }
 	
 	
 	

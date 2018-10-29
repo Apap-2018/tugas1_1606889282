@@ -59,12 +59,12 @@
 						</span>
 					</td>
 				</tr>
-				<span th:each="jabatan, rowStat : *{jabatan}">
+				<span th:each="jabatan, rowStat : *{jabatanList}">
 					<tr>
 						<td style="vertical-align: top; text-align: left;" height="50" th:text="${rowStat.count} == 1 ? 'Jabatan' : ''"></td>
 						<td>
-							<select name="jabatan" id="jabatan" form="pegawaiForm">
-								<option th:each="jabatan : ${listJabatan}" th:field="*{jabatan[__${rowStat.index}__]}" th:value="${jabatan.id}" th:text="${jabatan.nama}"></option>
+							<select name="jabatanList" id="jabatan" form="pegawaiForm">
+								<option th:each="jabatan : ${listJabatan}" th:field="*{jabatanList[__${rowStat.index}__]}" th:value="${jabatan.id}" th:text="${jabatan.nama}"></option>
 							</select>
 							<button type="submit" name="deleteJabatan" th:value="${rowStat.index}" th:style="${rowStat.count} == 1 ? 'display: none;' : ''">X</button></td>
 						</td>
@@ -76,7 +76,7 @@
 				</tr>
 			</table>
 			<br>
-			<button type="submit">Submit</button>
+			<button type="submit" class="btn btn-primary">Submit</button>
 		</form>
 	
 </body>
