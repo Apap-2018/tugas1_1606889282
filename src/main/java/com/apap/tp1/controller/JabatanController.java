@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.apap.tp1.model.JabatanModel;
 import com.apap.tp1.repository.JabatanDb;
@@ -29,9 +30,11 @@ public class JabatanController {
 	}
 	
 	@RequestMapping(value = "/jabatan/tambah", method = RequestMethod.POST)
-	private String addJabatan(@ModelAttribute JabatanModel jabatan){
+	private String addJabatan(@ModelAttribute JabatanModel jabatan, RedirectAttributes redirectAtt){
 		jabatanService.addJabatan(jabatan);
-		return "save-data";
+		String message = "Jabatan " + jabatan.getNama() + " berhasil ditambah";
+		redirectAtt.addFlashAttribute("message", message);
+		return "redirect:/jabatan/tambah";
 	}
 	
 	@RequestMapping(value= "/jabatan/view", method = RequestMethod.GET)
@@ -49,21 +52,28 @@ public class JabatanController {
 	}
 	
 	@RequestMapping(value="/jabatan/ubah", method=RequestMethod.POST)
-	private String changeJabatanSubmit(@ModelAttribute JabatanModel jabatan) {
+	private String changeJabatanSubmit(@ModelAttribute JabatanModel jabatan, RedirectAttributes redirectAtt) {
 		jabatanService.changeJabatan(jabatan, jabatan.getId());
-		return "save-data";
+		String message = "Jabatan " + jabatan.getNama() + " berhasil diubah!";
+		redirectAtt.addFlashAttribute("message", message);
+		redirectAtt.addAttribute("idJabatan", jabatan.getId());
+		return "redirect:/jabatan/ubah";
 	}
 	
 	@RequestMapping(value="/jabatan/hapus", method=RequestMethod.POST)
-	private String deleteJabatan(@ModelAttribute JabatanModel jabatan, Model model) throws Exception{
-		try {
+	private String deleteJabatan(@ModelAttribute JabatanModel jabatan, Model model,RedirectAttributes redirectAtt) throws Exception{
+		JabatanModel jabat = jabatanService.getJabatanById(jabatan.getId());
+		String message = "";
+		if (jabat.getPegawaiList().size()==0) {
+			message = "Jabatan " + jabat.getNama() + " berhasil dihapus!";
 			jabatanService.deleteJabatanById(jabatan.getId());
-			model.addAttribute("message","hapus");
-			return "delete-jabatan";
-		}catch (Exception e) {
-			model.addAttribute("jabatan",jabatanService.getJabatanById(jabatan.getId()));
-			return "view-jabatan";
 		}
+		else {
+			message = "Jabatan " + jabat.getNama() + " memiliki pegawai, tidak bisa dihapus!";
+		}
+		redirectAtt.addFlashAttribute("message", message);
+		model.addAttribute("jabatan", jabat.getNama());		
+		return "redirect:/";
 	}
 	
 	@RequestMapping(value="/jabatan/viewall", method=RequestMethod.GET)

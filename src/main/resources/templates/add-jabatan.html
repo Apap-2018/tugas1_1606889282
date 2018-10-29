@@ -9,21 +9,30 @@
 <body>
 
 	<nav th:replace="fragments/fragment :: navbar"></nav>
-	<h3>Tambah Jabatan</h3>
-	<form th:action="@{/jabatan/tambah}" th:object="${jabatan}" method="POST">
-	<input type="hidden"/>
-	Nama <br>
-	<input type="text" name="nama"/>
-	<br>
-	Deskripsi <br>
-	<input type="text" name="deskripsi"/>
-	<br>
-	Gaji Pokok <br>
-	<input type="number" name="gajiPokok"/>
-	<br><br>
-	<button type="submit">Simpan</button>
-	</form>	
+	<div class="col-md-6">
+		<h3>Tambah Jabatan</h3>
+		<form th:action="@{/jabatan/tambah}" th:object="${jabatan}" method="POST">
+			<label for="nama">Nama</label>
+			<input type="text" name="nama" class="form-control"/>
+			<br>
+			<label for="deskripsi">Deskripsi</label>
+			<input type="text" name="deskripsi" class="form-control"/>
+			<br>
+			<label for="gajiPokok">Gaji Pokok</label>
+			<input type="number" name="gajiPokok" class="form-control"/>
+			<br>
+			<br>
+			<button type="submit" class="btn btn-primary">Tambah</button>
+		</form>
+		</div>
 </body>
 	
 	
 </html>
+
+<script th:inline="javascript">
+	var message = /*[[${message}]]*/ 'default';
+	if (message!=null){
+		alert(message);
+}
+</script>

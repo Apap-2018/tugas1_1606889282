@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.apap.tp1.model.ProvinsiModel;
 
 @Repository
-public interface ProvinsiDb extends JpaRepository<ProvinsiModel, Integer>{
+public interface ProvinsiDb extends JpaRepository<ProvinsiModel, Long>{
 	
 }
